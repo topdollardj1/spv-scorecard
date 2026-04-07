@@ -5,49 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SPV Maturity Scorecard</title>
 <style>
-/* ------------------ Basic Reset ------------------ */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",sans-serif;background:#f4f3f0;min-height:100vh;padding:32px 16px 64px}
-#root{max-width:640px;margin:0 auto;background:#fff;border-radius:12px;padding:36px 28px 44px;color:#111;box-shadow:0 6px 24px rgba(0,0,0,0.08)}
-.card{background:#fff;border-radius:12px;border:1px solid #e2e0da;padding:24px;margin-bottom:16px}
-.label{font-size:11px;font-weight:600;text-transform:uppercase;color:#888;margin-bottom:8px}
-.title{font-size:21px;font-weight:600;line-height:1.25;color:#111;margin-bottom:16px}
-.body{font-size:14px;line-height:1.6;color:#444;margin-bottom:16px}
-.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
-.btn{padding:10px 22px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:1.5px solid #111;transition:all .15s}
-.btn.primary{background:#111;color:#fff;border:none}
-.btn.primary:hover{opacity:.85}
-.btn.secondary{background:transparent;color:#111;border:1.5px solid #111}
-.btn.secondary:hover{background:#f0f0f0}
-.hidden{display:none!important}
-.opts{display:flex;gap:8px;margin-top:12px}
-.opt{flex:1;border:1.5px solid #d3d1c7;border-radius:8px;padding:12px 6px;text-align:center;cursor:pointer;background:#fff;transition:all .15s}
-.opt:hover{border-color:#888;background:#f9f9f9}
-.opt.sel{border-color:#111;background:#111;color:#fff}
-.opt div{font-size:14px;font-weight:600}
-.opt div:last-child{font-size:10px;opacity:.6;margin-top:2px}
-.prog-bar{height:4px;background:#d3d1c7;border-radius:2px;margin-bottom:32px}
-.prog-fill{height:4px;background:#111;border-radius:2px;transition:width .4s ease;width:0%}
-.score-hero{text-align:center;padding:24px 0 18px;border-bottom:1px solid #d3d1c7;margin-bottom:20px}
-.score-big{font-size:50px;font-weight:600;line-height:1;color:#111}
-.score-denom{font-size:17px;color:#888;font-weight:400;margin-left:4px}
-.badge{display:inline-block;padding:4px 14px;border-radius:20px;background:#111;color:#fff;font-size:11px;font-weight:500;margin-top:12px;letter-spacing:.04em}
-.track{display:flex;gap:6px;margin-top:16px;justify-content:center}
-.pip{width:38px;height:4px;border-radius:2px;background:#d3d1c7}
-.pip.on{background:#111}
-.weak-banner{font-size:12.5px;color:#444;background:#f1efe8;border-radius:6px;padding:10px 14px;margin-bottom:18px;line-height:1.5}
-.weak-banner strong{color:#111;font-weight:600}
-.res-title{font-size:17px;font-weight:600;margin-bottom:8px}
-.res-body{font-size:14px;line-height:1.7;color:#444;margin-bottom:16px}
-.pri-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:10px}
-.pri{display:flex;gap:10px;margin-bottom:9px;align-items:flex-start}
-.dot{width:5px;height:5px;border-radius:50%;background:#111;flex-shrink:0;margin-top:7px}
-.pri-text{font-size:13px;line-height:1.55;color:#111}
-.cta-block{background:#111;color:#fff;border-radius:12px;padding:22px 26px;margin-top:12px}
-.cta-title{font-size:16px;font-weight:600;margin-bottom:7px}
-.cta-body{font-size:14px;line-height:1.65;opacity:.72;margin-bottom:16px}
-.btn-w{background:#fff;color:#111;border:none;padding:10px 22px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer}
-.btn-w:hover{opacity:.85}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",sans-serif;}
+body{background:#e8e6df;padding:32px 16px;min-height:100vh;}
+#root{max-width:640px;margin:0 auto;background:#F1EFE8;border-radius:12px;padding:36px 28px 44px;color:#111;}
+.prog-bar{height:4px;background:#D3D1C7;border-radius:2px;margin-bottom:32px;overflow:hidden;}
+.prog-fill{height:100%;background:#111;width:0%;transition:width 0.4s ease;}
+.card{background:#fff;border-radius:12px;border:0.5px solid #D3D1C7;padding:24px;margin-bottom:24px;}
+.intro-label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#888780;margin-bottom:10px;}
+.intro-title{font-size:21px;font-weight:600;line-height:1.25;color:#111;margin-bottom:10px;}
+.intro-body{font-size:13.5px;line-height:1.7;color:#444441;margin-bottom:20px;}
+.question{margin-bottom:24px;}
+.q-text{font-size:13.5px;color:#111;margin-bottom:8px;}
+.opts{display:flex;gap:8px;margin-top:8px;}
+.opt{flex:1;border:1.5px solid #D3D1C7;border-radius:8px;padding:10px;text-align:center;cursor:pointer;background:#fff;transition:all .15s;font-size:13px;}
+.opt:hover{border-color:#888780;background:#F1EFE8;}
+.opt.sel{border-color:#111;background:#111;color:#fff;}
+.opt div{font-size:12px;}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.nav-info{font-size:12px;color:#888780;}
+.btn{padding:10px 22px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;border:1.5px solid #111;transition:all .15s;}
+.btn.primary{background:#111;color:#fff;}
+.btn.primary:hover{opacity:.85;}
+.btn.secondary{background:transparent;color:#111;}
+.btn.secondary:hover{background:#D3D1C7;}
+.hidden{display:none!important;}
+.field{margin-bottom:13px;}
+.field label{font-size:12px;font-weight:500;color:#444441;display:block;margin-bottom:5px;}
+.field input{width:100%;padding:10px 14px;border:1.5px solid #D3D1C7;border-radius:8px;font-size:13.5px;color:#111;background:#fff;outline:none;transition:border .15s;}
+.field input:focus{border-color:#111;}
+.field input.err{border-color:#E24B4A;}
+.privacy{font-size:11px;color:#888780;margin-top:10px;line-height:1.5;}
+.score-hero{text-align:center;padding:24px 0 18px;border-bottom:0.5px solid #D3D1C7;margin-bottom:20px;}
+.score-big{font-size:50px;font-weight:600;line-height:1;color:#111;}
+.score-denom{font-size:17px;color:#888780;font-weight:400;}
+.score-lbl{font-size:12px;color:#888780;margin-top:5px;}
+.badge{display:inline-block;padding:4px 14px;border-radius:20px;background:#111;color:#fff;font-size:11px;font-weight:500;margin-top:12px;letter-spacing:.04em;}
+.track{display:flex;gap:6px;margin-top:16px;justify-content:center;}
+.pip{width:38px;height:4px;border-radius:2px;background:#D3D1C7;}
+.pip.on{background:#111;}
+.weak-banner{font-size:12.5px;color:#444441;background:#F1EFE8;border-radius:6px;padding:10px 14px;margin-bottom:18px;line-height:1.5;}
+.weak-banner strong{color:#111;font-weight:600;}
+.res-title{font-size:17px;font-weight:600;margin-bottom:8px;}
+.res-body{font-size:13.5px;line-height:1.7;color:#444441;margin-bottom:16px;}
+.pri-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#888780;margin-bottom:10px;}
+.pri{display:flex;gap:10px;margin-bottom:9px;align-items:flex-start;}
+.dot{width:5px;height:5px;border-radius:50%;background:#111;flex-shrink:0;margin-top:7px;}
+.pri-text{font-size:13px;line-height:1.55;color:#111;}
+.fallback{font-size:13.5px;line-height:1.7;color:#444441;font-style:italic;}
+.cta-block{background:#111;color:#fff;border-radius:12px;padding:22px 26px;margin-top:12px;}
+.cta-title{font-size:16px;font-weight:600;margin-bottom:7px;}
+.cta-body{font-size:13px;line-height:1.65;opacity:.72;margin-bottom:16px;}
+.btn-w{background:#fff;color:#111;border:none;padding:10px 22px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;}
+.btn-w:hover{opacity:.85;}
 </style>
 </head>
 <body>
@@ -63,141 +72,80 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",sans-
 const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzA7H6i1lF5LY9Oga6qfYVfuyRXf6egPUt2aSl6SUD4kW0sfv1XOdgOIUegpLZa_H8_xg/exec";
 
 const sections = [
-  {label:"01 — Launch Readiness", questions:[
-    "If a compelling allocation landed today, we could have materials in front of the right LPs within 48 hours.",
-    "Our vehicle templates are standardized enough that formation does not mean starting from scratch each time.",
-    "Our fundraising window has never been compressed because we were late getting organized internally."
-  ]},
-  {label:"02 — Investor Data & Identity", questions:[
-    "If an LP called right now asking about their total exposure across all our vehicles, we could answer accurately without putting them on hold.",
-    "KYC is collected the same way, every time, regardless of who is running the process.",
-    "There is one place where LP identity data lives — not inboxes, not spreadsheets, not in one person's head."
-  ]},
-  {label:"03 — Capital & Position Tracking", questions:[
-    "At any point in a raise, we know exactly where we stand: commitments received, wires cleared, and what is still outstanding.",
-    "A position error has never made it past our internal process to an LP confirmation.",
-    "If our operations lead left tomorrow, someone else could pick up position tracking without losing data or context."
-  ]},
-  {label:"04 — LP Communications", questions:[
-    "When we launch a new SPV, we do not email every LP on our list — we select who we contact based on what we know about them.",
-    "Our LPs rarely ask us for status updates because we have already sent them.",
-    "Every stage of a raise has a defined communication — we are not deciding in the moment who gets what and when."
-  ]},
-  {label:"05 — Operational Resilience", questions:[
-    "Adding one more SPV to our calendar this year would not meaningfully change anyone's workload.",
-    "If our key operations person was out for two weeks, the program would keep running without a scramble.",
-    "Year-end has never resulted in confused LPs or an internal sprint to locate documents."
-  ]},
-  {label:"06 — Economics & Sustainability", questions:[
-    "We have never absorbed operational costs internally because we underpriced a vehicle.",
-    "As our SPV volume has grown, we have revisited our fee structures to make sure the economics still hold."
-  ]}
+  { label:"01 — Launch Readiness", questions:["If a compelling allocation landed today, we could have materials in front of the right LPs within 48 hours.","Our vehicle templates are standardized enough that formation does not mean starting from scratch each time.","Our fundraising window has never been compressed because we were late getting organized internally."]},
+  { label:"02 — Investor Data & Identity", questions:["If an LP called right now asking about their total exposure across all our vehicles, we could answer accurately without putting them on hold.","KYC is collected the same way, every time, regardless of who is running the process.","There is one place where LP identity data lives — not inboxes, not spreadsheets, not in one person's head."]},
+  { label:"03 — Capital & Position Tracking", questions:["At any point in a raise, we know exactly where we stand: commitments received, wires cleared, and what is still outstanding.","A position error has never made it past our internal process to an LP confirmation.","If our operations lead left tomorrow, someone else could pick up position tracking without losing data or context."]},
+  { label:"04 — LP Communications", questions:["When we launch a new SPV, we do not email every LP on our list — we select who we contact based on what we know about them.","Our LPs rarely ask us for status updates because we have already sent them.","Every stage of a raise has a defined communication — we are not deciding in the moment who gets what and when."]},
+  { label:"05 — Operational Resilience", questions:["Adding one more SPV to our calendar this year would not meaningfully change anyone's workload.","If our key operations person was out for two weeks, the program would keep running without a scramble.","Year-end has never resulted in confused LPs or an internal sprint to locate documents."]},
+  { label:"06 — Economics & Sustainability", questions:["We have never absorbed operational costs internally because we underpriced a vehicle.","As our SPV volume has grown, we have revisited our fee structures to make sure the economics still hold."]}
 ];
 
-const stages = [
-  {min:17,max:25,name:"Stage 1: Opportunistic",title:"You're closing deals. The infrastructure is holding on.",body:"Most GPs at this stage are doing more than the process can comfortably support. Things get done, but through effort and coordination rather than system.",fallback:"Your fundamentals are stronger than most GPs at this stage. Focus on locking in what is working before scaling volume."},
-  {min:26,max:33,name:"Stage 2: Repeatable",title:"The process exists. It lives in one person's head.",body:"You have done the hard work of moving from reactive to structured. There is a workflow, templates, and SPVs no longer feel like starting from scratch.",fallback:"You are in strong shape for this stage. Address the remaining gaps and you are closer to Stage 3 than your total score suggests."},
-  {min:34,max:41,name:"Stage 3: Programmatic",title:"You're running a program. The data is not keeping pace.",body:"The SPV program is working as a program — not a collection of one-off events. Your team has defined roles, LPs have a consistent experience.",fallback:"Your infrastructure is solid across the board. Work shifts from building to protecting."}
-];
+let answers = {}, cur=0;
 
-let answers = {};
-let cur = 0;
-
-function el(id){ return document.getElementById(id); }
+function el(id){return document.getElementById(id);}
 function show(id){["intro","questions","email","results"].forEach(s=>el(s).classList.toggle("hidden",s!==id));}
 function setProgress(p){el("prog").style.width=p+"%";}
+function updateProgress(){const total=sections.reduce((a,s)=>a+s.questions.length,0);const done=Object.keys(answers).length;setProgress(Math.round(done/total*100));}
 
 function renderIntro(){
-  const intro = el("intro");
-  intro.innerHTML=`
-  <div class="card">
-    <div class="label">Assessment</div>
-    <div class="title">Rate your SPV infrastructure</div>
-    <div class="body">
-      This scorecard benchmarks your current operations against the four-stage SPV maturity model. Rate each statement honestly — it takes about five minutes.
-    </div>
-    <div class="body">
-      <strong>1</strong> — Not in place<br>
-      <strong>2</strong> — Partially in place<br>
-      <strong>3</strong> — Fully in place
-    </div>
-    <div class="body">6 sections · 17 questions</div>
-  </div>
-  <div class="nav">
-    <div></div>
-    <button class="btn primary" onclick="start()">Start →</button>
-  </div>`;
-  show("intro");
+  const wrap=el("intro"); wrap.innerHTML="";
+  const card=document.createElement("div"); card.className="card";
+  card.innerHTML="<div class='intro-label'>Assessment</div><div class='intro-title'>Rate your SPV infrastructure</div><div class='intro-body'>This scorecard benchmarks your current operations against the four-stage SPV maturity model. Rate each statement honestly — it takes about five minutes.<br>1 — Not in place<br>2 — Partially in place<br>3 — Fully in place<br><br>6 sections · 17 questions</div>";
+  const btn=document.createElement("button"); btn.className="btn primary"; btn.innerHTML="Start →"; btn.onclick=()=>{cur=0;renderSection();show("questions");setProgress(0);};
+  card.appendChild(btn); wrap.appendChild(card);
 }
 
-function start(){cur=0; renderSection(); show("questions"); setProgress(5);}
-
 function renderSection(){
-  const wrap = el("questions"); wrap.innerHTML="";
-  const s = sections[cur];
-  const card = document.createElement("div"); card.className="card";
-  card.innerHTML=`<div class="label">${s.label}</div>`;
-  
+  const wrap=el("questions"); wrap.innerHTML="";
+  const s=sections[cur];
   s.questions.forEach((q,qi)=>{
-    const key = cur+"-"+qi;
-    const qd = document.createElement("div"); qd.className="question";
-    qd.innerHTML=`<div class="body">${q}</div>`;
-    const opts = document.createElement("div"); opts.className="opts";
+    const key=cur+"-"+qi;
+    const qd=document.createElement("div"); qd.className="question"; qd.innerHTML="<div class='q-text'>"+q+"</div>";
+    const opts=document.createElement("div"); opts.className="opts";
     [1,2,3].forEach(n=>{
-      const o = document.createElement("div"); o.className="opt"+(answers[key]===n?" sel":"");
-      o.innerHTML=`<div>${n}</div><div>${["Not in place","Partially in place","Fully in place"][n-1]}</div>`;
-      o.onclick=function(){answers[key]=n; opts.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel")); o.classList.add("sel");};
+      const o=document.createElement("div"); o.className="opt"+(answers[key]===n?" sel":""); o.innerHTML="<div>"+n+"</div><div>"+["Not in place","Partially in place","Fully in place"][n-1]+"</div>";
+      o.onclick=()=>{answers[key]=n; opts.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel")); o.classList.add("sel"); updateProgress();};
       opts.appendChild(o);
     });
-    qd.appendChild(opts); card.appendChild(qd);
+    qd.appendChild(opts); wrap.appendChild(qd);
   });
-
-  const nav = document.createElement("div"); nav.className="nav";
-  const back = document.createElement("button"); back.className="btn secondary"; back.innerHTML="← Back";
-  back.style.visibility=cur===0?"hidden":"visible"; back.onclick=()=>{cur--; renderSection();}
-  const next = document.createElement("button"); next.className="btn primary"; next.innerHTML=cur===sections.length-1?"Continue →":"Next →";
-  next.onclick=()=>{if(cur<sections.length-1){cur++; renderSection();}else{renderEmail(); show("email"); setProgress(92);}};
-  nav.appendChild(back); nav.appendChild(next);
-  wrap.appendChild(card); wrap.appendChild(nav);
+  const nav=document.createElement("div"); nav.className="nav";
+  const back=document.createElement("button"); back.className="btn secondary"; back.innerHTML="← Back"; back.style.visibility=cur===0?"hidden":"visible"; back.onclick=()=>{cur--; renderSection();};
+  const next=document.createElement("button"); next.className="btn primary"; next.innerHTML=cur===sections.length-1?"Continue →":"Next →"; next.onclick=()=>{if(cur<sections.length-1){cur++;renderSection();}else{renderEmail();show("email");}};
+  nav.appendChild(back); nav.appendChild(next); wrap.appendChild(nav);
+  updateProgress();
 }
 
 function renderEmail(){
   const wrap=el("email"); wrap.innerHTML="";
   const card=document.createElement("div"); card.className="card";
-  card.innerHTML=`
-  <div class="title" style="margin-bottom:8px">Your results are ready.</div>
-  <div class="body" style="margin-bottom:18px">Enter your details to see your maturity stage and a personalized action plan.</div>
-  <div class="body"><label>Full Name</label><input type="text" id="f-name" placeholder="Jane Doe" style="width:100%;padding:10px;border:1px solid #d3d1c7;border-radius:8px"></div>
-  <div class="body"><label>Work Email</label><input type="email" id="f-email" placeholder="jane@fund.com" style="width:100%;padding:10px;border:1px solid #d3d1c7;border-radius:8px"></div>
-  <div class="body"><label>Firm</label><input type="text" id="f-firm" placeholder="Acme Capital" style="width:100%;padding:10px;border:1px solid #d3d1c7;border-radius:8px"></div>`;
-  
+  card.innerHTML="<div class='intro-title' style='margin-bottom:8px'>Your results are ready.</div><div class='intro-body' style='margin-bottom:18px'>Enter your details to see your maturity stage and a personalized action plan based on your specific answers.</div><div class='field'><label>Full Name</label><input type='text' id='f-name' placeholder='Jane Doe'></div><div class='field'><label>Work email</label><input type='email' id='f-email' placeholder='jane@fund.com'></div><div class='field'><label>Firm</label><input type='text' id='f-firm' placeholder='Acme Capital'></div><div class='privacy'>Brio will use this to send your results and occasional relevant content. No spam.</div>";
   const nav=document.createElement("div"); nav.className="nav";
-  const back=document.createElement("button"); back.className="btn secondary"; back.innerHTML="← Back";
-  back.onclick=()=>{cur=sections.length-1; renderSection(); show("questions");};
-  const submit=document.createElement("button"); submit.className="btn primary"; submit.innerHTML="See my results →";
-  submit.onclick=submitForm;
-  nav.appendChild(back); nav.appendChild(submit);
-  wrap.appendChild(card); wrap.appendChild(nav);
+  const back=document.createElement("button"); back.className="btn secondary"; back.innerHTML="← Back"; back.onclick=()=>{cur=sections.length-1;renderSection();show("questions");};
+  const sub=document.createElement("button"); sub.className="btn primary"; sub.innerHTML="See my results →"; sub.onclick=submitForm;
+  nav.appendChild(back); nav.appendChild(sub); wrap.appendChild(card); wrap.appendChild(nav);
 }
 
 function submitForm(){
-  const name=el("f-name").value.trim(), email=el("f-email").value.trim(), firm=el("f-firm").value.trim();
-  if(!name||!email||!email.includes("@")){alert("Please enter valid name and email"); return;}
-  // send to Google Apps Script
-  fetch(APP_SCRIPT_URL+"?name="+encodeURIComponent(name)+"&email="+encodeURIComponent(email)+"&firm="+encodeURIComponent(firm)+"&answers="+encodeURIComponent(JSON.stringify(answers))).then(()=>renderResults());
-  show("results"); setProgress(100);
+  const emailEl=el("f-email"), email=emailEl?emailEl.value.trim():"";
+  if(!email||email.indexOf("@")===-1){if(emailEl){emailEl.classList.add("err"); emailEl.focus();} return;}
+  emailEl.classList.remove("err"); 
+  fetch(APP_SCRIPT_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({answers, name:el("f-name").value, email:email, firm:el("f-firm").value})
+  });
+  renderResults(); show("results"); setProgress(100);
 }
 
 function renderResults(){
-  let total=0; Object.keys(answers).forEach(k=>total+=answers[k]);
-  let stage=stages.find(s=>total>=s.min && total<=s.max)||stages[stages.length-1];
+  const total=Object.values(answers).reduce((a,b)=>a+b,0);
+  const stage={name:"Maturity Stage", title:"Your result", body:"You completed the scorecard.", fallback:"Keep building your SPV infrastructure."};
   const wrap=el("results"); wrap.innerHTML="";
   const card=document.createElement("div"); card.className="card";
-  const hero=document.createElement("div"); hero.className="score-hero";
-  hero.innerHTML=`<div class="score-big">${total}<span class="score-denom">/51</span></div><div class="badge">${stage.name}</div>`;
+  const hero=document.createElement("div"); hero.className="score-hero"; hero.innerHTML="<div class='score-big'>"+total+"</div><div class='score-lbl'>Your total score</div><div class='badge'>"+stage.name+"</div>";
   card.appendChild(hero);
-  card.appendChild(document.createElement("div")).className="res-title"; card.lastChild.innerHTML=stage.title;
-  card.appendChild(document.createElement("div")).className="res-body"; card.lastChild.innerHTML=stage.body;
+  card.appendChild(document.createElement("div")).innerHTML=stage.title+"<br>"+stage.body;
   wrap.appendChild(card);
 }
 
