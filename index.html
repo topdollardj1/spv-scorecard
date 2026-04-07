@@ -8,26 +8,92 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif;background:#e8e6df;padding:30px}
-#root{max-width:640px;margin:auto;background:#F1EFE8;border-radius:12px;padding:30px}
+body{
+font-family:-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",sans-serif;
+background:#e8e6df;
+padding:32px 16px;
+}
 
-.prog{height:3px;background:#ddd;margin-bottom:25px;border-radius:3px}
-.bar{height:3px;background:#111;width:0%}
+#root{
+max-width:640px;
+margin:auto;
+background:#F1EFE8;
+border-radius:12px;
+padding:32px 24px;
+}
 
-.card{background:#fff;padding:24px;border-radius:12px;margin-bottom:20px}
+.bar-wrap{height:2px;background:#D3D1C7;margin-bottom:28px}
+.bar{height:2px;background:#111;width:0%;transition:.4s}
 
-.sec{font-size:12px;color:#888;margin-bottom:10px;text-transform:uppercase}
-.q{margin-bottom:18px;font-size:14px}
+.card{
+background:#fff;
+border-radius:12px;
+padding:22px;
+border:1px solid #D3D1C7;
+margin-bottom:12px;
+}
+
+.label{
+font-size:11px;
+letter-spacing:.1em;
+color:#888;
+margin-bottom:8px;
+text-transform:uppercase;
+}
+
+.title{
+font-size:20px;
+font-weight:600;
+margin-bottom:10px;
+}
+
+.body{
+font-size:13.5px;
+color:#444;
+line-height:1.6;
+}
+
+.q{margin-bottom:18px;font-size:13.5px}
+
 .opts{display:flex;gap:8px;margin-top:8px}
-.opt{flex:1;border:1px solid #ccc;padding:10px;border-radius:8px;text-align:center;cursor:pointer}
-.opt.sel{background:#111;color:#fff}
+.opt{
+flex:1;
+border:1px solid #D3D1C7;
+border-radius:8px;
+padding:10px;
+text-align:center;
+cursor:pointer;
+transition:.15s;
+font-size:12px;
+}
+.opt:hover{background:#F1EFE8}
+.opt.sel{background:#111;color:#fff;border-color:#111}
 
-.nav{display:flex;justify-content:space-between;margin-top:20px}
-button{padding:10px 18px;border-radius:8px;border:1px solid #111;cursor:pointer}
+.nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:18px;
+}
+
+.btn{
+padding:10px 18px;
+border-radius:8px;
+border:1px solid #111;
+font-size:13px;
+cursor:pointer;
+}
+
 .primary{background:#111;color:#fff}
-.primary:disabled{opacity:.3}
+.primary:disabled{opacity:.3;cursor:not-allowed}
 
-input{width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc}
+input{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #D3D1C7;
+margin-bottom:10px;
+}
 
 .hidden{display:none}
 </style>
@@ -35,84 +101,95 @@ input{width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px so
 
 <body>
 <div id="root">
-<div class="prog"><div class="bar" id="bar"></div></div>
+<div class="bar-wrap"><div class="bar" id="bar"></div></div>
 
 <div id="intro"></div>
 <div id="questions" class="hidden"></div>
-<div id="form" class="hidden"></div>
+<div id="email" class="hidden"></div>
 <div id="results" class="hidden"></div>
 </div>
 
 <script>
-const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-5A4AqR5iCKV9lAxWEudNqUr-hiiXYnxPmI8fFcxbcKAZAckqWFzMQk1ul_3zYzGNTA/exec";
+const APP_SCRIPT_URL="https://script.google.com/macros/s/AKfycby-5A4AqR5iCKV9lAxWEudNqUr-hiiXYnxPmI8fFcxbcKAZAckqWFzMQk1ul_3zYzGNTA/exec";
 
-const sections = [
+const sections=[
 {label:"01 — Launch Readiness",q:[
 "If a compelling allocation landed today, we could have materials in front of LPs within 48 hours.",
-"Templates are standardized",
-"No fundraising delays from internal disorganization"
+"Our vehicle templates are standardized enough that formation doesn’t mean starting from scratch.",
+"Our fundraising has never been delayed by internal disorganization."
 ]},
-{label:"02 — Investor Data",q:[
-"LP exposure instantly available",
-"KYC standardized",
-"Single source of LP truth"
+{label:"02 — Investor Data & Identity",q:[
+"We can instantly report LP exposure across all vehicles.",
+"KYC is collected consistently every time.",
+"LP data exists in one source of truth."
 ]},
-{label:"03 — Tracking",q:[
-"Commitments tracked in real-time",
-"No position errors",
-"Tracking transferable"
+{label:"03 — Capital & Tracking",q:[
+"We always know commitments and wires in real time.",
+"No position errors reach LPs.",
+"Tracking can be handed over without friction."
 ]},
-{label:"04 — Communication",q:[
-"Targeted outreach",
-"Proactive updates",
-"Defined communication stages"
+{label:"04 — LP Communication",q:[
+"We target outreach based on LP profile.",
+"LPs rarely ask for updates.",
+"Each stage has defined communication."
 ]},
 {label:"05 — Operations",q:[
-"Adding SPVs doesn’t increase workload",
-"Team redundancy exists",
-"Year-end is smooth"
+"Adding SPVs doesn't increase workload.",
+"Operations are not dependent on one person.",
+"Year-end runs smoothly."
 ]},
 {label:"06 — Economics",q:[
-"No underpriced SPVs",
-"Fees reviewed regularly"
+"No SPVs are underpriced.",
+"Fees are regularly reviewed."
 ]}
 ];
 
-let answers = {};
-let cur = 0;
+let answers={},cur=0;
 
 function show(id){
-["intro","questions","form","results"].forEach(s=>{
+["intro","questions","email","results"].forEach(s=>{
 document.getElementById(s).classList.add("hidden");
 });
 document.getElementById(id).classList.remove("hidden");
 }
 
 function progress(){
-let total = sections.reduce((a,s)=>a+s.q.length,0);
-let done = Object.keys(answers).length;
-document.getElementById("bar").style.width = (done/total*100)+"%";
+let total=sections.reduce((a,s)=>a+s.q.length,0);
+let done=Object.keys(answers).length;
+document.getElementById("bar").style.width=(done/total*100)+"%";
 }
 
-function intro(){
-introDiv.innerHTML = `
+// INTRO
+function renderIntro(){
+intro.innerHTML=`
 <div class="card">
-<h2>Rate your SPV infrastructure</h2>
-<p style="margin-top:8px">17-question scorecard (~5 min)</p>
+<div class="label">Assessment</div>
+<div class="title">Rate your SPV infrastructure</div>
+<div class="body">17-question scorecard (~5 minutes)</div>
 </div>
 <div class="nav">
 <div></div>
-<button class="primary" onclick="next()">Start</button>
+<button class="btn primary" onclick="start()">Start →</button>
 </div>`;
 show("intro");
 }
 
-function render(){
-let s = sections[cur];
-let html = `<div class="card"><div class="sec">${s.label}</div>`;
+function start(){
+cur=0;
+renderSection();
+show("questions");
+progress();
+}
+
+// QUESTIONS
+function renderSection(){
+let s=sections[cur];
+
+let html=`<div class="card">
+<div class="label">${s.label}</div>`;
 
 s.q.forEach((q,i)=>{
-let key = cur+"-"+i;
+let key=cur+"-"+i;
 html+=`
 <div class="q">${q}
 <div class="opts">
@@ -125,11 +202,11 @@ html+=`
 
 html+=`</div>
 <div class="nav">
-<button onclick="back()" ${cur==0?"style='visibility:hidden'":""}>Back</button>
-<button class="primary" id="nextBtn" onclick="next()" ${!done()?"disabled":""}>${cur==sections.length-1?"Continue":"Next"}</button>
+<button class="btn" onclick="back()" ${cur==0?"style='visibility:hidden'":""}>Back</button>
+<button class="btn primary" id="next" onclick="next()" ${!complete()?"disabled":""}>${cur==5?"Continue →":"Next →"}</button>
 </div>`;
 
-questionsDiv.innerHTML = html;
+questions.innerHTML=html;
 show("questions");
 }
 
@@ -137,45 +214,50 @@ function select(key,val,el){
 answers[key]=val;
 [...el.parentNode.children].forEach(x=>x.classList.remove("sel"));
 el.classList.add("sel");
-document.getElementById("nextBtn").disabled=!done();
+document.getElementById("next").disabled=!complete();
 progress();
 }
 
-function done(){
+function complete(){
 return sections[cur].q.every((_,i)=>answers[cur+"-"+i]);
 }
 
 function next(){
-if(cur<sections.length){render();cur++;}
-else renderForm();
+if(cur<sections.length-1){cur++;renderSection();}
+else renderEmail();
 }
 
-function back(){cur--;render();}
+function back(){cur--;renderSection();}
 
-function renderForm(){
-formDiv.innerHTML = `
+// EMAIL
+function renderEmail(){
+email.innerHTML=`
 <div class="card">
-<h2>Your results are ready</h2>
+<div class="title">Your results are ready</div>
 <input id="name" placeholder="Full Name">
-<input id="email" placeholder="Work Email">
+<input id="emailField" placeholder="Work Email">
 <input id="firm" placeholder="Firm">
 </div>
 <div class="nav">
-<button onclick="cur--;render()">Back</button>
-<button class="primary" onclick="submit()">See results</button>
+<button class="btn" onclick="back()">Back</button>
+<button class="btn primary" onclick="submit()">See my results →</button>
 </div>`;
-show("form");
+show("email");
 }
 
 function submit(){
-let name=nameEl.value;
-let email=emailEl.value;
-let firm=firmEl.value;
+let name=document.getElementById("name").value;
+let email=document.getElementById("emailField").value;
+let firm=document.getElementById("firm").value;
 
-if(!name||!email.includes("@")||!firm){alert("Fill all fields");return;}
+if(!name||!email.includes("@")||!firm){
+alert("Please complete all fields");
+return;
+}
 
-let score = Object.values(answers).reduce((a,b)=>a+b,0);
+let score=Object.values(answers).reduce((a,b)=>a+b,0);
 
+// SEND DATA
 fetch(APP_SCRIPT_URL,{
 method:"POST",
 mode:"no-cors",
@@ -185,46 +267,38 @@ body:JSON.stringify({name,email,firm,score,answers})
 renderResults(score);
 }
 
+// RESULTS
 function renderResults(score){
 let stage,desc;
 
 if(score<=25){
 stage="Stage 1 — Opportunistic";
-desc="Infrastructure is fragile.";
+desc="Your infrastructure is fragile and highly manual.";
 }
 else if(score<=33){
 stage="Stage 2 — Repeatable";
-desc="Process exists but is person-dependent.";
+desc="Processes exist but rely on individuals.";
 }
 else if(score<=41){
 stage="Stage 3 — Programmatic";
-desc="Strong system, data risk emerging.";
+desc="Strong systems, but data fragmentation risk.";
 }
 else{
 stage="Stage 4 — Compounding";
-desc="Scalable, high-performing system.";
+desc="Scalable, high-performing SPV program.";
 }
 
-resultsDiv.innerHTML = `
+results.innerHTML=`
 <div class="card">
-<h2>${score}/51</h2>
-<h3>${stage}</h3>
-<p>${desc}</p>
+<div class="title">${score}/51</div>
+<div class="body"><strong>${stage}</strong></div>
+<div class="body" style="margin-top:10px">${desc}</div>
 </div>`;
-
 show("results");
 }
 
-const introDiv=document.getElementById("intro");
-const questionsDiv=document.getElementById("questions");
-const formDiv=document.getElementById("form");
-const resultsDiv=document.getElementById("results");
-
-const nameEl={get value(){return document.getElementById("name")?.value||""}};
-const emailEl={get value(){return document.getElementById("email")?.value||""}};
-const firmEl={get value(){return document.getElementById("firm")?.value||""}};
-
-intro();
+// INIT
+renderIntro();
 </script>
 </body>
 </html>
