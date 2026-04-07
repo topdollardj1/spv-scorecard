@@ -5,47 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SPV Scorecard</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",sans-serif;background:#e8e6df;min-height:100vh;padding:32px 16px 64px}
+/* Styles (same as your previous version, condensed) */
+body{font-family:sans-serif;background:#e8e6df;margin:0;padding:32px 16px 64px;min-height:100vh}
 #root{max-width:640px;margin:0 auto;background:#F1EFE8;border-radius:12px;padding:36px 28px 44px;color:#111}
+.card{background:#fff;border-radius:12px;border:0.5px solid #D3D1C7;padding:24px;margin-bottom:4px}
+/* Progress Bar */
 .prog-bar{height:2px;background:#D3D1C7;border-radius:2px;margin-bottom:32px}
 .prog-fill{height:2px;background:#111;border-radius:2px;transition:width .4s ease;width:0%}
-.card{background:#fff;border-radius:12px;border:0.5px solid #D3D1C7;padding:24px;margin-bottom:4px}
-.intro-label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#888780;margin-bottom:10px}
-.intro-title{font-size:21px;font-weight:600;line-height:1.25;color:#111;margin-bottom:10px}
-.intro-body{font-size:13.5px;line-height:1.7;color:#444441;margin-bottom:20px}
-.scale-row{display:flex;flex-wrap:wrap;gap:14px}
-.scale-item{display:flex;align-items:center;gap:8px;font-size:12px;color:#444441}
-.scale-num{width:24px;height:24px;border-radius:50%;border:1.5px solid #D3D1C7;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
-.sec-label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#888780;padding-bottom:10px;border-bottom:0.5px solid #D3D1C7;margin-bottom:18px}
-.question{margin-bottom:20px}
-.q-text{font-size:13.5px;line-height:1.6;color:#111;margin-bottom:10px}
-.options{display:flex;gap:8px}
-.opt{flex:1;border:1.5px solid #D3D1C7;border-radius:8px;padding:10px 6px;text-align:center;cursor:pointer;background:#fff;transition:all .15s}
-.opt:hover{border-color:#888780;background:#F1EFE8}
-.opt.sel{border-color:#111;background:#111;color:#fff}
-.opt-num{font-size:14px;font-weight:600;display:block}
-.opt-lbl{font-size:10px;opacity:.6;margin-top:2px;display:block;line-height:1.3}
-.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
-.nav-info{font-size:12px;color:#888780}
 .btn{padding:10px 22px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;border:1.5px solid #111;transition:all .15s}
 .btn-p{background:#111;color:#fff}
 .btn-p:hover{opacity:.85}
-.btn-p:disabled{opacity:.3;cursor:not-allowed}
+.hidden{display:none!important}
+.options{display:flex;gap:8px;margin-bottom:20px}
+.opt{flex:1;border:1.5px solid #D3D1C7;border-radius:8px;padding:10px;text-align:center;cursor:pointer;background:#fff;transition:all .15s}
+.opt:hover{border-color:#888780;background:#F1EFE8}
+.opt.sel{border-color:#111;background:#111;color:#fff}
 .field{margin-bottom:13px}
 .field label{font-size:12px;font-weight:500;color:#444441;display:block;margin-bottom:5px}
 .field input{width:100%;padding:10px 14px;border:1.5px solid #D3D1C7;border-radius:8px;font-size:13.5px;color:#111;background:#fff;outline:none;transition:border .15s;font-family:inherit}
 .field input:focus{border-color:#111}
-.privacy{font-size:11px;color:#888780;margin-top:10px;line-height:1.5}
-.score-hero{text-align:center;padding:24px 0 18px;border-bottom:0.5px solid #D3D1C7;margin-bottom:20px}
-.score-big{font-size:50px;font-weight:600;line-height:1;color:#111}
-.score-denom{font-size:17px;color:#888780;font-weight:400}
-.score-lbl{font-size:12px;color:#888780;margin-top:5px}
-.badge{display:inline-block;padding:4px 14px;border-radius:20px;background:#111;color:#fff;font-size:11px;font-weight:500;margin-top:12px;letter-spacing:.04em}
-.track{display:flex;gap:6px;margin-top:16px;justify-content:center}
-.pip{width:38px;height:4px;border-radius:2px;background:#D3D1C7}
-.pip.on{background:#111}
-.hidden{display:none!important}
 </style>
 </head>
 <body>
@@ -58,133 +36,79 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",sans-
 </div>
 
 <script>
+// Formspree endpoint
 var FORM_ENDPOINT = "https://formspree.io/f/xykbvzea";
 
-var sections = [
-  { label: "01 — Launch Readiness", questions: [
-    "If a compelling allocation landed today, we could have materials in front of the right LPs within 48 hours.",
-    "Our vehicle templates are standardized enough that formation does not mean starting from scratch each time.",
-    "Our fundraising window has never been compressed because we were late getting organized internally."
-  ]},
-  { label: "02 — Investor Data & Identity", questions: [
-    "If an LP called right now asking about their total exposure across all our vehicles, we could answer accurately without putting them on hold.",
-    "KYC is collected the same way, every time, regardless of who is running the process.",
-    "There is one place where LP identity data lives — not inboxes, not spreadsheets, not in one person's head."
-  ]},
-  { label: "03 — Capital & Position Tracking", questions: [
-    "At any point in a raise, we know exactly where we stand: commitments received, wires cleared, and what is still outstanding.",
-    "A position error has never made it past our internal process to an LP confirmation.",
-    "If our operations lead left tomorrow, someone else could pick up position tracking without losing data or context."
-  ]},
-  { label: "04 — LP Communications", questions: [
-    "When we launch a new SPV, we do not email every LP on our list — we select who we contact based on what we know about them.",
-    "Our LPs rarely ask us for status updates because we have already sent them.",
-    "Every stage of a raise has a defined communication — we are not deciding in the moment who gets what and when."
-  ]},
-  { label: "05 — Operational Resilience", questions: [
-    "Adding one more SPV to our calendar this year would not meaningfully change anyone's workload.",
-    "If our key operations person was out for two weeks, the program would keep running without a scramble.",
-    "Year-end has never resulted in confused LPs or an internal sprint to locate documents."
-  ]},
-  { label: "06 — Economics & Sustainability", questions: [
-    "We have never absorbed operational costs internally because we underpriced a vehicle.",
-    "As our SPV volume has grown, we have revisited our fee structures to make sure the economics still hold."
-  ]}
+// Sections and questions
+var sections=[
+  {label:"01 — Launch Readiness",questions:["If a compelling allocation landed today, we could have materials in front of the right LPs within 48 hours.","Our vehicle templates are standardized enough that formation does not mean starting from scratch each time.","Our fundraising window has never been compressed because we were late getting organized internally."]},
+  {label:"02 — Investor Data & Identity",questions:["If an LP called right now asking about their total exposure across all our vehicles, we could answer accurately without putting them on hold.","KYC is collected the same way, every time, regardless of who is running the process.","There is one place where LP identity data lives — not inboxes, not spreadsheets, not in one person's head."]},
+  {label:"03 — Capital & Position Tracking",questions:["At any point in a raise, we know exactly where we stand: commitments received, wires cleared, and what is still outstanding.","A position error has never made it past our internal process to an LP confirmation.","If our operations lead left tomorrow, someone else could pick up position tracking without losing data or context."]},
+  {label:"04 — LP Communications",questions:["When we launch a new SPV, we do not email every LP on our list — we select who we contact based on what we know about them.","Our LPs rarely ask us for status updates because we have already sent them.","Every stage of a raise has a defined communication — we are not deciding in the moment who gets what and when."]},
+  {label:"05 — Operational Resilience",questions:["Adding one more SPV to our calendar this year would not meaningfully change anyone's workload.","If our key operations person was out for two weeks, the program would keep running without a scramble.","Year-end has never resulted in confused LPs or an internal sprint to locate documents."]},
+  {label:"06 — Economics & Sustainability",questions:["We have never absorbed operational costs internally because we underpriced a vehicle.","As our SPV volume has grown, we have revisited our fee structures to make sure the economics still hold."]}
 ];
 
-var qp = [
-  { key: "0-0", text: "Define a 48-hour launch protocol: who gets notified, what materials go out, and who owns each step. Test it before you need it under pressure." },
-  { key: "0-1", text: "Build a master vehicle template covering structure, jurisdiction, and fee terms. Every new SPV should start from that document, not from scratch." },
-  { key: "0-2", text: "Audit your last three raises and map where internal coordination caused delays. Those friction points are your first template-building targets." },
-  { key: "1-0", text: "Consolidate LP identity data into a single system. If you cannot answer a question about an LP's total exposure in under two minutes, the data is not where it needs to be." },
-  { key: "1-1", text: "Standardize your KYC collection process across all vehicles. Document the exceptions from your last three SPVs and build a protocol to handle them before they surface again." },
-  { key: "1-2", text: "Identify every place LP data currently lives — inboxes, spreadsheets, shared drives, admin systems — and consolidate into one source of truth with a single owner." },
-  { key: "2-0", text: "Build a real-time commitment tracker: wires received, outstanding, and reconciled against confirmations. If this lives in a spreadsheet today, that is your first migration target." },
-  { key: "2-1", text: "Implement a pre-confirmation checklist requiring a second set of eyes on position data before anything goes to an LP. One error at scale is a relationship problem." },
-  { key: "2-2", text: "Document your position tracking process in enough detail that a new hire could run it from day one. That documentation is not real until someone unfamiliar with it has tested it." },
-  { key: "3-0", text: "Build a basic LP segmentation model — which investors see which deal types, based on their preferences and prior behavior. Apply it on every raise without exceptions." },
-  { key: "3-1", text: "Define a proactive communication cadence for each stage of a raise: what goes out, to whom, and when. LPs who have to ask for updates are forming an impression." },
-  { key: "3-2", text: "Map your communication protocol for each raise stage — soft close, capital call, closing confirmation, post-close update. Put it in writing and assign ownership." },
-  { key: "4-0", text: "Identify the most time-intensive steps in your current workflow. Those are your first candidates for automation or process redesign — before volume forces the issue." },
-  { key: "4-1", text: "Identify every workflow step that only one person knows how to run. Document those first, then cross-train or automate. Single points of failure compound at scale." },
-  { key: "4-2", text: "Build a year-end checklist and communication protocol before you need it. LP confusion at year-end is almost always a process problem, not a timing problem." },
-  { key: "5-0", text: "Revisit the economics of your last three SPVs and calculate the actual operational cost per vehicle, including time. If the fee structure did not cover it, price the next one differently." },
-  { key: "5-1", text: "Schedule a regular economics review — at minimum annually, or whenever you add two or more SPVs to your annual cadence. Fee structures that made sense at three SPVs rarely hold at ten." }
-];
+var answers={},cur=0;
 
-var stages = [
-  { min: 17, max: 25, name: "Stage 1: Opportunistic",
-    title: "You're closing deals. The infrastructure is holding on.",
-    body: "Most GPs at this stage are doing more than the process can comfortably support. Things get done, but through effort and coordination rather than system. That works until it does not — and the breaking point usually comes mid-raise, when a compressed timeline meets a KYC exception and your operations lead is already at capacity.",
-    fallback: "Your fundamentals are stronger than most GPs at this stage. Focus on locking in what is working before scaling volume." },
-  { min: 26, max: 33, name: "Stage 2: Repeatable",
-    title: "The process exists. It lives in one person's head.",
-    body: "You have done the hard work of moving from reactive to structured. There is a workflow, there are templates, and SPVs no longer feel like starting from scratch. The fragility is in the dependencies — one operations lead who holds the institutional knowledge, investor data that is organized but not systematized, and a process that runs smoothly until that person is unavailable.",
-    fallback: "You are in strong shape for this stage. Address the remaining gaps and you are closer to Stage 3 than your total score suggests." },
-  { min: 34, max: 41, name: "Stage 3: Programmatic",
-    title: "You're running a program. The data is not keeping pace.",
-    body: "The SPV program is working as a program — not a collection of one-off events. Your team has defined roles, LPs have a consistent experience, and the workflow is predictable enough that you are spending more time on deals than on coordination. What tends to break at this stage is not the process — it is data integrity. Fragmentation between your CRM, administrator, and internal records starts to show up as position discrepancies, communication gaps, and compliance exposure that accumulates quietly.",
-    fallback: "Your infrastructure is solid across the board. The work shifts from building to protecting — regular data governance reviews and stress-testing at higher volume are what keep a Stage 3 program from drifting backward." },
-  { min: 42, max: 51, name: "Stage 4: Compounding",
-    title: "The program is working. Keep the discipline that got you here.",
-    body: "Your LP base is generating its own momentum. Re-ups are happening without a full sell, referrals are coming in, and the team is running the workflow rather than the workflow running the team. The risk at this stage is subtle — it is not a breakdown, it is drift. Data exceptions accumulate without resolution. Governance processes that worked at lower volume stop scaling. Growth continues, but the compounding slows.",
-    fallback: "You have built something most GPs have not. The priorities below are maintenance, not repair — keep investing in the operational discipline that got you here." }
-];
-
-var answers = {}, cur = 0;
-
+// Helpers
 function el(id){return document.getElementById(id);}
-function h(tag,cls,html){var e=document.createElement(tag); if(cls)e.className=cls; if(html!==undefined)e.innerHTML=html; return e;}
-function show(id){["intro","questions","email","results"].forEach(s=>{el("s-"+s).classList.toggle("hidden",s!==id);});}
+function show(id){["intro","questions","email","results"].forEach(s=>el("s-"+s).classList.toggle("hidden",s!==id));}
 function setProgress(p){el("prog").style.width=p+"%";}
-function scrollTop(){el("root").scrollIntoView({behavior:"smooth",block:"start"});}
 function secDone(){return sections[cur].questions.every((_,qi)=>answers[cur+"-"+qi]!==undefined);}
 function updateProgress(){var total=sections.reduce((a,s)=>a+s.questions.length,0); var done=Object.keys(answers).length; setProgress(Math.max(5,Math.round((done/total)*85)));}
 
-// INTRO
+// Render Intro
 function renderIntro(){
   var wrap=el("s-intro"); wrap.innerHTML="";
-  var card=h("div","card");
-  card.innerHTML="<div class='intro-label'>Assessment</div><div class='intro-title'>Rate your SPV infrastructure</div><div class='intro-body'>This scorecard benchmarks your current operations against the four-stage SPV maturity model. Rate each statement honestly — it takes about five minutes.</div><div class='scale-row'><div class='scale-item'><div class='scale-num'>1</div>Not in place</div><div class='scale-item'><div class='scale-num'>2</div>Partially in place</div><div class='scale-item'><div class='scale-num'>3</div>Fully in place</div></div>";
-  var nav=h("div","nav");
-  nav.appendChild(h("span","nav-info","6 sections &middot; 17 questions"));
-  var btn=h("button","btn btn-p","Start →");
+  var card=document.createElement("div"); card.className="card";
+  card.innerHTML="<h2>SPV Scorecard</h2><p>Rate each statement honestly. About 5 minutes.</p>";
+  var btn=document.createElement("button"); btn.className="btn btn-p"; btn.textContent="Start →";
   btn.onclick=function(){cur=0; renderSection(); show("questions"); setProgress(5);};
-  nav.appendChild(btn); card.appendChild(nav); wrap.appendChild(card);
+  card.appendChild(btn); wrap.appendChild(card);
 }
 
-// QUESTIONS
+// Render Section
 function renderSection(){
   var wrap=el("s-questions"); wrap.innerHTML="";
   var s=sections[cur];
-  var card=h("div","card");
-  card.appendChild(h("div","sec-label",s.label));
+  var card=document.createElement("div"); card.className="card";
+  var title=document.createElement("h3"); title.textContent=s.label; card.appendChild(title);
   s.questions.forEach((qtext,q)=>{
     var qid=cur+"-"+q;
-    var qwrap=h("div","question");
-    qwrap.appendChild(h("div","q-text",qtext));
-    var opts=h("div","options");
-    for(var i=1;i<=3;i++){
-      var o=h("div","opt"); o.innerHTML="<span class='opt-num'>"+i+"</span><span class='opt-lbl'>"+(["Not in place","Partially in place","Fully in place"][i-1])+"</span>";
-      if(answers[qid]==i) o.classList.add("sel");
-      o.onclick=(function(i,qid){return function(){answers[qid]=i; renderSection(); updateProgress();};})(i,qid);
+    var qwrap=document.createElement("div"); qwrap.style.marginBottom="12px";
+    var qel=document.createElement("p"); qel.textContent=qtext; qwrap.appendChild(qel);
+    var opts=document.createElement("div"); opts.className="options";
+    ["Not in place","Partially in place","Fully in place"].forEach((lbl,i)=>{
+      var o=document.createElement("div"); o.className="opt"; o.innerHTML=i+1+"<br>"+lbl;
+      if(answers[qid]==i+1)o.classList.add("sel");
+      o.onclick=function(){answers[qid]=i+1; renderSection(); updateProgress();};
       opts.appendChild(o);
-    }
+    });
     qwrap.appendChild(opts); card.appendChild(qwrap);
   });
-  var nav=h("div","nav");
-  var btnNext=h("button","btn btn-p",cur<sections.length-1?"Next →":"Submit →");
+  var btnNext=document.createElement("button"); btnNext.className="btn btn-p"; btnNext.textContent=cur<sections.length-1?"Next →":"Submit →";
   btnNext.onclick=function(){
     if(!secDone()){alert("Please answer all questions in this section."); return;}
-    if(cur<sections.length-1){ cur++; renderSection(); } else { renderEmail(); show("email"); setProgress(90); }
-    scrollTop();
+    if(cur<sections.length-1){cur++; renderSection();}else{renderEmail(); show("email"); setProgress(90);}
   };
-  nav.appendChild(btnNext); card.appendChild(nav); wrap.appendChild(card); scrollTop();
+  card.appendChild(btnNext); wrap.appendChild(card); scrollTo(0,0);
 }
 
-// EMAIL
+// Render Email
 function renderEmail(){
   var wrap=el("s-email"); wrap.innerHTML="";
-  var card=h("div","card"); card.appendChild(h("div","intro-title","Your info"));
+  var card=document.createElement("div"); card.className="card";
+  card.innerHTML="<h3>Enter your info</h3>";
   var f=document.createElement("form"); f.method="POST"; f.action=FORM_ENDPOINT;
-  f.innerHTML='<div class="field"><label for="name">Name</label><input type="text" name="name" required></div><div class="field"><label for="
+  f.innerHTML='<div class="field"><label for="name">Name</label><input type="text" name="name" required></div>'+
+                '<div class="field"><label for="email">Email</label><input type="email" name="email" required></div>'+
+                '<button class="btn btn-p" type="submit">Get Results →</button>';
+  card.appendChild(f); wrap.appendChild(card);
+}
+
+// Init
+renderIntro();
+</script>
+</body>
+</html>
