@@ -3,83 +3,176 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>SPV Scorecard</title>
 
 <style>
-body{font-family:Arial;background:#e8e6df;padding:30px}
-#root{max-width:700px;margin:auto;background:#F1EFE8;padding:30px;border-radius:10px}
-.card{background:#fff;padding:20px;border-radius:10px;margin-bottom:20px}
-button{padding:10px 20px;cursor:pointer}
-.opt{border:1px solid #ccc;padding:10px;margin:5px;cursor:pointer}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif;background:#e8e6df;padding:30px}
+#root{max-width:640px;margin:auto;background:#F1EFE8;border-radius:12px;padding:30px}
+
+.prog{height:3px;background:#ddd;margin-bottom:25px;border-radius:3px}
+.bar{height:3px;background:#111;width:0%}
+
+.card{background:#fff;padding:24px;border-radius:12px;margin-bottom:20px}
+
+.sec{font-size:12px;color:#888;margin-bottom:10px;text-transform:uppercase}
+.q{margin-bottom:18px;font-size:14px}
+.opts{display:flex;gap:8px;margin-top:8px}
+.opt{flex:1;border:1px solid #ccc;padding:10px;border-radius:8px;text-align:center;cursor:pointer}
 .opt.sel{background:#111;color:#fff}
+
+.nav{display:flex;justify-content:space-between;margin-top:20px}
+button{padding:10px 18px;border-radius:8px;border:1px solid #111;cursor:pointer}
+.primary{background:#111;color:#fff}
+.primary:disabled{opacity:.3}
+
+input{width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc}
+
 .hidden{display:none}
 </style>
 </head>
 
 <body>
 <div id="root">
-<div id="app"></div>
+<div class="prog"><div class="bar" id="bar"></div></div>
+
+<div id="intro"></div>
+<div id="questions" class="hidden"></div>
+<div id="form" class="hidden"></div>
+<div id="results" class="hidden"></div>
 </div>
 
 <script>
 const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-5A4AqR5iCKV9lAxWEudNqUr-hiiXYnxPmI8fFcxbcKAZAckqWFzMQk1ul_3zYzGNTA/exec";
 
-const questions = [
-"Launch readiness is strong",
-"Investor data is centralized",
-"Tracking is accurate",
-"LP communication is proactive",
-"Operations scale well",
-"Economics are sustainable"
+const sections = [
+{label:"01 — Launch Readiness",q:[
+"If a compelling allocation landed today, we could have materials in front of LPs within 48 hours.",
+"Templates are standardized",
+"No fundraising delays from internal disorganization"
+]},
+{label:"02 — Investor Data",q:[
+"LP exposure instantly available",
+"KYC standardized",
+"Single source of LP truth"
+]},
+{label:"03 — Tracking",q:[
+"Commitments tracked in real-time",
+"No position errors",
+"Tracking transferable"
+]},
+{label:"04 — Communication",q:[
+"Targeted outreach",
+"Proactive updates",
+"Defined communication stages"
+]},
+{label:"05 — Operations",q:[
+"Adding SPVs doesn’t increase workload",
+"Team redundancy exists",
+"Year-end is smooth"
+]},
+{label:"06 — Economics",q:[
+"No underpriced SPVs",
+"Fees reviewed regularly"
+]}
 ];
 
 let answers = {};
-let step = 0;
+let cur = 0;
 
-function renderIntro(){
-document.getElementById("app").innerHTML = `
+function show(id){
+["intro","questions","form","results"].forEach(s=>{
+document.getElementById(s).classList.add("hidden");
+});
+document.getElementById(id).classList.remove("hidden");
+}
+
+function progress(){
+let total = sections.reduce((a,s)=>a+s.q.length,0);
+let done = Object.keys(answers).length;
+document.getElementById("bar").style.width = (done/total*100)+"%";
+}
+
+function intro(){
+introDiv.innerHTML = `
 <div class="card">
 <h2>Rate your SPV infrastructure</h2>
-<p>Quick 2-minute scorecard</p>
-<button onclick="renderQuestions()">Start</button>
+<p style="margin-top:8px">17-question scorecard (~5 min)</p>
+</div>
+<div class="nav">
+<div></div>
+<button class="primary" onclick="next()">Start</button>
 </div>`;
+show("intro");
 }
 
-function renderQuestions(){
-let html = `<div class="card"><h3>Questions</h3>`;
-questions.forEach((q,i)=>{
-html+=`<p>${q}</p>
-<div>
-<span class="opt" onclick="select(${i},1,this)">1</span>
-<span class="opt" onclick="select(${i},2,this)">2</span>
-<span class="opt" onclick="select(${i},3,this)">3</span>
+function render(){
+let s = sections[cur];
+let html = `<div class="card"><div class="sec">${s.label}</div>`;
+
+s.q.forEach((q,i)=>{
+let key = cur+"-"+i;
+html+=`
+<div class="q">${q}
+<div class="opts">
+<div class="opt ${answers[key]==1?"sel":""}" onclick="select('${key}',1,this)">1</div>
+<div class="opt ${answers[key]==2?"sel":""}" onclick="select('${key}',2,this)">2</div>
+<div class="opt ${answers[key]==3?"sel":""}" onclick="select('${key}',3,this)">3</div>
+</div>
 </div>`;
 });
-html+=`<button onclick="renderForm()">Next</button></div>`;
-document.getElementById("app").innerHTML = html;
+
+html+=`</div>
+<div class="nav">
+<button onclick="back()" ${cur==0?"style='visibility:hidden'":""}>Back</button>
+<button class="primary" id="nextBtn" onclick="next()" ${!done()?"disabled":""}>${cur==sections.length-1?"Continue":"Next"}</button>
+</div>`;
+
+questionsDiv.innerHTML = html;
+show("questions");
 }
 
-function select(i,val,el){
-answers[i]=val;
+function select(key,val,el){
+answers[key]=val;
 [...el.parentNode.children].forEach(x=>x.classList.remove("sel"));
 el.classList.add("sel");
+document.getElementById("nextBtn").disabled=!done();
+progress();
 }
 
+function done(){
+return sections[cur].q.every((_,i)=>answers[cur+"-"+i]);
+}
+
+function next(){
+if(cur<sections.length){render();cur++;}
+else renderForm();
+}
+
+function back(){cur--;render();}
+
 function renderForm(){
-document.getElementById("app").innerHTML = `
+formDiv.innerHTML = `
 <div class="card">
-<h3>Your details</h3>
-<input id="name" placeholder="Full Name"><br><br>
-<input id="email" placeholder="Email"><br><br>
-<input id="firm" placeholder="Firm"><br><br>
-<button onclick="submit()">See results</button>
+<h2>Your results are ready</h2>
+<input id="name" placeholder="Full Name">
+<input id="email" placeholder="Work Email">
+<input id="firm" placeholder="Firm">
+</div>
+<div class="nav">
+<button onclick="cur--;render()">Back</button>
+<button class="primary" onclick="submit()">See results</button>
 </div>`;
+show("form");
 }
 
 function submit(){
-let name=document.getElementById("name").value;
-let email=document.getElementById("email").value;
-let firm=document.getElementById("firm").value;
+let name=nameEl.value;
+let email=emailEl.value;
+let firm=firmEl.value;
+
+if(!name||!email.includes("@")||!firm){alert("Fill all fields");return;}
 
 let score = Object.values(answers).reduce((a,b)=>a+b,0);
 
@@ -93,26 +186,45 @@ renderResults(score);
 }
 
 function renderResults(score){
-let result="";
+let stage,desc;
 
-if(score<=10){
-result="<h2>Stage 1</h2><p>You are early stage.</p>";
+if(score<=25){
+stage="Stage 1 — Opportunistic";
+desc="Infrastructure is fragile.";
 }
-else if(score<=14){
-result="<h2>Stage 2</h2><p>You are growing.</p>";
+else if(score<=33){
+stage="Stage 2 — Repeatable";
+desc="Process exists but is person-dependent.";
+}
+else if(score<=41){
+stage="Stage 3 — Programmatic";
+desc="Strong system, data risk emerging.";
 }
 else{
-result="<h2>Stage 3</h2><p>You are advanced.</p>";
+stage="Stage 4 — Compounding";
+desc="Scalable, high-performing system.";
 }
 
-document.getElementById("app").innerHTML = `
+resultsDiv.innerHTML = `
 <div class="card">
-<h2>Your Score: ${score}</h2>
-${result}
+<h2>${score}/51</h2>
+<h3>${stage}</h3>
+<p>${desc}</p>
 </div>`;
+
+show("results");
 }
 
-renderIntro();
+const introDiv=document.getElementById("intro");
+const questionsDiv=document.getElementById("questions");
+const formDiv=document.getElementById("form");
+const resultsDiv=document.getElementById("results");
+
+const nameEl={get value(){return document.getElementById("name")?.value||""}};
+const emailEl={get value(){return document.getElementById("email")?.value||""}};
+const firmEl={get value(){return document.getElementById("firm")?.value||""}};
+
+intro();
 </script>
 </body>
 </html>
